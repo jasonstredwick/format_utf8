@@ -10,6 +10,7 @@ Notes:
 
 Examples:
 
+```
 #include <print>
 #include <string>
 #include <string_view>
@@ -52,3 +53,4 @@ std::println("{}", s8);
 std::println("{}", std::u8string{"hello😀"});
 std::println("{}", std::u8string_view{"hello😀"});
 std::println("");
+```
