@@ -21,7 +21,7 @@ struct std::formatter<char8_t> : public std::formatter<uint8_t> {
 template <size_t N>
 struct std::formatter<char8_t[N], char> : std::formatter<std::string_view> {
     auto format(const char8_t(&input)[N], std::format_context& ctx) const {
-        std::string_view sv{reinterpret_cast<const char*>(input), N};
+        std::string_view sv{reinterpret_cast<const char*>(input), N - 1};
         return std::formatter<std::string_view>::format(sv, ctx);
     }
 };
