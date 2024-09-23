@@ -4,6 +4,8 @@
 #pragma once
 
 
+#include <algorithm>
+#include <bit>
 #include <cstdint>
 #include <format>
 #include <string>
@@ -13,34 +15,7 @@
 template <>
 struct std::formatter<char8_t> : public std::formatter<uint8_t> {
     auto format(const char8_t& c, std::format_context& ctx) const {
-        return std::formatter<uint8_t>::format(static_cast<uint8_t>(c), ctx);
-    }
-};
-
-
-template <size_t N>
-struct std::formatter<char8_t[N], char> : std::formatter<std::string_view> {
-    auto format(const char8_t(&input)[N], std::format_context& ctx) const {
-        std::string_view sv{reinterpret_cast<const char*>(input), N - 1};
-        return std::formatter<std::string_view>::format(sv, ctx);
-    }
-};
-
-
-template <>
-struct std::formatter<std::u8string> : std::formatter<std::string_view> {
-    auto format(const std::u8string& input, std::format_context& ctx) const {
-        std::string_view sv{reinterpret_cast<const char*>(input.data()), input.size()};
-        return std::formatter<std::string_view>::format(sv, ctx);
-    }
-};
-
-
-template <>
-struct std::formatter<std::u8string_view> : std::formatter<std::string_view> {
-    auto format(const std::u8string_view& input, std::format_context& ctx) const {
-        std::string_view sv{reinterpret_cast<const char*>(input.data()), input.size()};
-        return std::formatter<std::string_view>::format(sv, ctx);
+        return std::formatter<uint8_t>::format(std::bit_cast<char8_t, uint8_t>(c), ctx);
     }
 };
 
@@ -48,7 +23,7 @@ struct std::formatter<std::u8string_view> : std::formatter<std::string_view> {
 template <>
 struct std::formatter<char16_t> : public std::formatter<uint16_t> {
     auto format(const char16_t& c, std::format_context& ctx) const {
-        return std::formatter<uint16_t>::format(static_cast<uint16_t>(c), ctx);
+        return std::formatter<uint16_t>::format(std::bit_cast<char16_t, uint16_t>(c), ctx);
     }
 };
 
@@ -56,6 +31,33 @@ struct std::formatter<char16_t> : public std::formatter<uint16_t> {
 template <>
 struct std::formatter<char32_t> : public std::formatter<uint32_t> {
     auto format(const char32_t& c, std::format_context& ctx) const {
-        return std::formatter<uint32_t>::format(static_cast<uint32_t>(c), ctx);
+        return std::formatter<uint32_t>::format(std::bit_cast<char32_t, uint32_t>(c), ctx);
+    }
+};
+
+
+template <size_t N>
+struct std::formatter<char8_t[N], char> : std::formatter<std::string_view> {
+    auto format(const char8_t(&input)[N], std::format_context& ctx) const {
+        std::ranges::transform(input, ctx.out(), [](auto c) { return static_cast<char>(c); });
+        return ctx.out();
+    }
+};
+
+
+template <>
+struct std::formatter<std::u8string> : public std::formatter<std::string> {
+    auto format(const std::u8string& input, std::format_context& ctx) const {
+        std::ranges::transform(input, ctx.out(), [](auto c) { return static_cast<char>(c); });
+        return ctx.out();
+    }
+};
+
+
+template <>
+struct std::formatter<std::u8string_view> : public std::formatter<std::string_view> {
+    auto format(const std::u8string_view& input, std::format_context& ctx) const {
+        std::ranges::transform(input, ctx.out(), [](auto c) { return static_cast<char>(c); });
+        return ctx.out();
     }
 };
