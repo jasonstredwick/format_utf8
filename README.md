@@ -4,9 +4,11 @@ Single header extension to std::format for char8_t, char16_t, char32_t, u8string
 Notes:
 1. Single character values are always intepreted as numeric values.
 2. If the unicode character is desired then use the string form with that single character.
-3. When compiling for MSVC, ensure compile flag `/utf-8` is used.
-4. On godbolt, `<format> + <iostream>` requires c++20; gcc(x86-64 13.3), clang(x86-64 trunk : 19.1.0 compiler errors), and msvc (x64 19.32)
-5. On godbolt, `<print>` requires c++23; gcc(x86-64 14.1), clang(x86-64 latest : 19.1.0 missing <print>), and msvc (x64 19.37)
+3. char8_t, char16_t, and char32_t support their equivalent uintN_t formatting specifiers.
+4. u8string and u8string_view do not currently support formatting specifiers other than just outputting the string as-is.
+5. When compiling for MSVC, ensure compile flag `/utf-8` is used.
+6. On godbolt, `<format> + <iostream>` requires c++20; gcc(x86-64 13.3), clang(x86-64 trunk : 19.1.0 compiler errors), and msvc (x64 19.32)
+7. On godbolt, `<print>` requires c++23; gcc(x86-64 14.1), clang(x86-64 latest : 19.1.0 missing <print>), and msvc (x64 19.37)
 
 
 Examples:
